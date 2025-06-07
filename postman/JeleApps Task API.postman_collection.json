@@ -1,0 +1,89 @@
+{
+	"info": {
+		"_postman_id": "1926d8ee-0586-4c9f-9c32-78960d280002",
+		"name": "JeleApps Task API",
+		"description": "This collection contains registration and profile API routes for JeleApps task.\n\n## Endpoints\n\n### POST /api/registration\n\nRegisters a new user. Returns an authentication token, which is saved to the environment automatically.\n\n### GET /api/profile\n\nReturns the authenticated user's profile. Requires a Bearer token in the `Authorization` header.\n\n## Environment Variables\n\n- `base_url`: Base URL of the API (e.g., `http://localhost:8000`)\n    \n- `auth_token`: Bearer token auto-filled after registration\n    \n\n## Usage Instructions\n\n1. Set the correct `base_url` in the environment.\n    \n2. Run the `registration` request.\n    \n3. The `auth_token` will be auto-saved to the environment.\n    \n4. Use the `profile` request to fetch the user's profile using the saved token.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45702602",
+		"_collection_link": "https://garnikdavtyan.postman.co/workspace/5199a633-48f6-4bb4-8c1b-5e9334478687/collection/45702602-1926d8ee-0586-4c9f-9c32-78960d280002?action=share&source=collection_link&creator=45702602"
+	},
+	"item": [
+		{
+			"name": "User Registration",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();\r",
+							"pm.environment.set(\"auth_token\", response.token);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"john.doe@example.com\",\r\n  \"password\": \"password123\",\r\n  \"gender\": \"male\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/registration",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"registration"
+					]
+				},
+				"description": "Registers a new user.\n\n### Request Body (JSON):\n\n- `email` (string, required): Must be a valid and unique email address\n    \n- `password` (string, required): Minimum 6 characters\n    \n- `gender` (string, required): Allowed values: `male`, `female`\n    \n\n### Response:\n\n- 201: User registered, returns `token`\n    \n- 422: Validation error"
+			},
+			"response": []
+		},
+		{
+			"name": "User Profile",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{auth_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/profile",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"profile"
+					]
+				},
+				"description": "Returns profile information of the currently authenticated user.\n\n### Response:\n\n- 200: User profile object\n    \n- 401: Unauthenticated"
+			},
+			"response": []
+		}
+	]
+}
